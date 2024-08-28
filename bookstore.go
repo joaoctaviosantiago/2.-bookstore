@@ -17,3 +17,7 @@ func Buy(b Book) (Book, error) {
 
 	return b, nil
 }
+
+func GetAllBooks(catalog []Book) []Book {
+	return catalog
+}
