@@ -59,7 +59,7 @@ func TestBuyErrorsIfNoBookLeft(t *testing.T) {
 func TestGetAllBooks(t *testing.T) {
 	t.Parallel()
 
-	catalog := map[int]bookstore.Book{
+	catalog := bookstore.Catalog{
 		1: {ID: 1, Title: "For the Love of Go"},
 		2: {ID: 2, Title: "The Power of Go: Tools"},
 	}
@@ -69,7 +69,7 @@ func TestGetAllBooks(t *testing.T) {
 		{ID: 2, Title: "The Power of Go: Tools"},
 	}
 
-	got := bookstore.GetAllBooks(catalog)
+	got := catalog.GetAllBooks()
 
 	sort.Slice(got, func(i, j int) bool {
 		return got[i].ID < got[j].ID
@@ -83,7 +83,7 @@ func TestGetAllBooks(t *testing.T) {
 func TestGetBook(t *testing.T) {
 	t.Parallel()
 
-	catalog := map[int]bookstore.Book{
+	catalog := bookstore.Catalog{
 		1: {ID: 1, Title: "For the Love of Go"},
 		2: {ID: 2, Title: "The Power of Go: Tools"},
 	}
@@ -92,7 +92,7 @@ func TestGetBook(t *testing.T) {
 		ID: 2, Title: "The Power of Go: Tools",
 	}
 
-	got, err := bookstore.GetBook(catalog, 2)
+	got, err := catalog.GetBook(2)
 
 	if err != nil {
 		t.Fatal(err)
@@ -106,11 +106,28 @@ func TestGetBook(t *testing.T) {
 func TestGetBookInvalidId(t *testing.T) {
 	t.Parallel()
 
-	catalog := map[int]bookstore.Book{}
+	catalog := bookstore.Catalog{}
 
-	_, err := bookstore.GetBook(catalog, 999)
+	_, err := catalog.GetBook(999)
 
 	if err == nil {
 		t.Fatal("want error for non-existent ID, got nil")
+	}
+}
+
+func TestNetPriceCents(t *testing.T) {
+	t.Parallel()
+
+	b := bookstore.Book{
+		Title:           "For the Love of Go",
+		PriceCents:      4000,
+		DiscountPercent: 25,
+	}
+
+	want := 3000
+	got := b.NetPriceCents()
+
+	if want != got {
+		t.Errorf("NetPrice(%d, %d): want %d, got %d", b.PriceCents, b.DiscountPercent, want, got)
 	}
 }
