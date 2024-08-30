@@ -51,3 +51,12 @@ func (b Book) NetPriceCents() int {
 
 	return b.PriceCents - discountValue
 }
+
+func (b *Book) SetPriceCents(newPrice int) error {
+	if newPrice < 0 {
+		return fmt.Errorf("negative price %d not allowed", newPrice)
+	}
+
+	b.PriceCents = newPrice
+	return nil
+}
